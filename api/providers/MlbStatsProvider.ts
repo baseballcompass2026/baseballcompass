@@ -26,13 +26,15 @@ export class MlbStatsProvider implements BaseballProvider {
   async getRanking(){
     const season=this.season();
     const standingsUrl=`https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=${season}&standingsTypes=regularSeason&hydrate=team`;
-    const hittingUrl=`https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=homeRuns,battingAverage&statGroup=hitting&statType=season&season=${season}&sportId=1&limit=10&hydrate=person,team`;
-    const pitchingUrl=`https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=earnedRunAverage&statGroup=pitching&statType=season&season=${season}&sportId=1&limit=10&hydrate=person,team`;
+    const hittingUrl=`https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=homeRuns,battingAverage,runsBattedIn,hits,stolenBases,onBasePercentage,sluggingPercentage,onBasePlusSlugging&statGroup=hitting&statType=season&season=${season}&sportId=1&limit=10&hydrate=person,team`;
+    const pitchingUrl=`https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=earnedRunAverage,wins,strikeouts,saves,walksAndHitsPerInningPitched,winningPercentage&statGroup=pitching&statType=season&season=${season}&sportId=1&limit=10&hydrate=person,team`;
     const [standingsData,hittingData,pitchingData]=await Promise.all([this.officialJson<MlbStandings>(standingsUrl),this.officialJson<MlbLeaders>(hittingUrl),this.officialJson<MlbLeaders>(pitchingUrl)]);
     const standings=(standingsData.records||[]).flatMap(record=>record.teamRecords.map((team,index)=>({division:divisionJa[record.division?.id||0]||"MLB",rank:index+1,name:teamName(team.team.name),value:`${team.wins}勝 ${team.losses}敗（${team.winningPercentage}）`})));
     const groups=[...(hittingData.leagueLeaders||[]),...(pitchingData.leagueLeaders||[])];
     const rows=(category:string,suffix:string)=>groups.find(group=>group.leaderCategory===category)?.leaders.map(leader=>({name:`${playerName(leader.person?.fullName||"-")}${leader.team?.name?`｜${teamName(leader.team.name)}`:""}`,value:`${leader.value}${suffix}`}))||[];
-    return{standings,homeRuns:rows("homeRuns","本"),batting:rows("battingAverage",""),era:rows("earnedRunAverage","")};
+    const battingLeaders=[{key:"homeRuns",label:"ホームラン",unit:"本"},{key:"battingAverage",label:"打率",unit:""},{key:"runsBattedIn",label:"打点",unit:"点"},{key:"hits",label:"安打",unit:"本"},{key:"stolenBases",label:"盗塁",unit:""},{key:"onBasePercentage",label:"出塁率",unit:""},{key:"sluggingPercentage",label:"長打率",unit:""},{key:"onBasePlusSlugging",label:"OPS",unit:""}].map(metric=>({...metric,rows:rows(metric.key,metric.unit)}));
+    const pitchingLeaders=[{key:"earnedRunAverage",label:"防御率",unit:""},{key:"wins",label:"勝利",unit:"勝"},{key:"strikeouts",label:"奪三振",unit:""},{key:"saves",label:"セーブ",unit:"S"},{key:"walksAndHitsPerInningPitched",label:"WHIP",unit:""},{key:"winPercentage",label:"勝率",unit:""}].map(metric=>({...metric,rows:rows(metric.key,metric.unit)}));
+    return{standings,battingLeaders,pitchingLeaders,homeRuns:rows("homeRuns","本"),batting:rows("battingAverage",""),era:rows("earnedRunAverage","")};
   }
   async getShop(){return{products:[{id:"bat-01",category:"バット",name:"コンパス メイプルバット",description:"振り抜きやすさを重視した硬式木製モデル。",price:14800},{id:"glove-01",category:"グローブ",name:"オールラウンドグローブ",description:"扱いやすいエントリーモデル。",price:12800},{id:"spike-01",category:"スパイク",name:"フィールドスピード",description:"軽量性とグリップを両立。",price:9800},{id:"train-01",category:"トレーニング",name:"トレーニングバンド",description:"肩まわりのウォームアップに。",price:2400},{id:"gear-01",category:"練習器具",name:"バッティングティー",description:"高さ調節ができる自主練習用。",price:6900},{id:"pick-01",category:"おすすめ",name:"ベースボールスターターセット",description:"練習を始める人におすすめ。",price:19800}]};}
 }
