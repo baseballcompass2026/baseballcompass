@@ -1,0 +1,5 @@
+// 共通ナビゲーションとAPI補助関数
+const page=document.body.dataset.page||"";const nav=[["today","/today/","TODAY"],["game","/game/","GAME"],["shop","/shop/","SHOP"],["search","/search/","検索"],["profile","/profile/","マイページ"]];
+const header=document.querySelector("[data-header]");if(header)header.innerHTML=`<header class="site-header"><nav class="nav" aria-label="メインナビゲーション"><a class="brand" href="/"><img src="/assets/favicon.svg" alt=""><span>BASEBALL COMPASS</span></a><div class="nav-links">${nav.map(([k,h,l])=>`<a href="${h}"${page===k?' aria-current="page"':""}>${l}</a>`).join("")}</div></nav></header>`;
+const footer=document.querySelector("[data-footer]");if(footer)footer.innerHTML=`<footer class="site-footer"><div class="container"><span>© ${new Date().getFullYear()} BASEBALL COMPASS</span><span>野球をもっと楽しもう。</span></div></footer>`;
+window.fetchCompass=async endpoint=>{const r=await fetch(`/api/${endpoint}`,{headers:{Accept:"application/json"}});if(!r.ok)throw new Error("データを取得できませんでした");return r.json()};window.escapeCompass=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]);
