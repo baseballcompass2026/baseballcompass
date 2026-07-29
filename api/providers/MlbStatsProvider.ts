@@ -11,6 +11,7 @@ const teamJa:Record<string,string>={
 // 確認済み選手名のみ日本語化し、未登録名は公式英語名へフォールバックする
 const playerJa:Record<string,string>={
 "Yordan Alvarez":"ヨルダン・アルバレス","Kyle Schwarber":"カイル・シュワーバー","Hunter Goodman":"ハンター・グッドマン","Ben Rice":"ベン・ライス","James Wood":"ジェームズ・ウッド","Junior Caminero":"ジュニオール・カミネロ","CJ Abrams":"CJ・エイブラムズ","Matt Olson":"マット・オルソン","Byron Buxton":"バイロン・バクストン","Colson Montgomery":"コルソン・モンゴメリー","Kazuma Okamoto":"岡本 和真","Otto Lopez":"オット・ロペス","Luis Arraez":"ルイス・アラエス","Nick Gonzales":"ニック・ゴンザレス","Jung Hoo Lee":"イ・ジョンフ","Freddie Freeman":"フレディ・フリーマン","Yandy Díaz":"ヤンディ・ディアス","Michael Harris II":"マイケル・ハリス2世","TJ Rumfield":"TJ・ラムフィールド","Jake McCarthy":"ジェイク・マッカーシー","Jacob Misiorowski":"ジェイコブ・ミジオロウスキー","Cam Schlittler":"キャム・シュリトラー","Chris Sale":"クリス・セール","Chase Burns":"チェイス・バーンズ","Nick Martinez":"ニック・マルティネス","Dylan Cease":"ディラン・シース","Parker Messick":"パーカー・メシック","Justin Wrobleski":"ジャスティン・ロブレスキー","Eduardo Rodriguez":"エドゥアルド・ロドリゲス","Max Meyer":"マックス・マイヤー"};
+const divisionJa:Record<string,string>={"American League East":"ア・リーグ東地区","American League Central":"ア・リーグ中地区","American League West":"ア・リーグ西地区","National League East":"ナ・リーグ東地区","National League Central":"ナ・リーグ中地区","National League West":"ナ・リーグ西地区"};
 const teamName=(name:string)=>teamJa[name]||name;
 const playerName=(name:string)=>playerJa[name]||name;
 
@@ -28,7 +29,7 @@ export class MlbStatsProvider implements BaseballProvider {
     const hittingUrl=`https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=homeRuns,battingAverage&statGroup=hitting&statType=season&season=${season}&sportId=1&limit=10&hydrate=person,team`;
     const pitchingUrl=`https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=earnedRunAverage&statGroup=pitching&statType=season&season=${season}&sportId=1&limit=10&hydrate=person,team`;
     const [standingsData,hittingData,pitchingData]=await Promise.all([this.officialJson<MlbStandings>(standingsUrl),this.officialJson<MlbLeaders>(hittingUrl),this.officialJson<MlbLeaders>(pitchingUrl)]);
-    const standings=(standingsData.records||[]).flatMap(record=>record.teamRecords.map((team,index)=>({rank:index+1,name:`${record.division?.name||"MLB"}｜${teamName(team.team.name)}`,value:`${team.wins}勝 ${team.losses}敗（${team.winningPercentage}）`})));
+    const standings=(standingsData.records||[]).flatMap(record=>record.teamRecords.map((team,index)=>({rank:index+1,name:`${divisionJa[record.division?.name||""]||"MLB"}｜${teamName(team.team.name)}`,value:`${team.wins}勝 ${team.losses}敗（${team.winningPercentage}）`})));
     const groups=[...(hittingData.leagueLeaders||[]),...(pitchingData.leagueLeaders||[])];
     const rows=(category:string,suffix:string)=>groups.find(group=>group.leaderCategory===category)?.leaders.map(leader=>({name:`${playerName(leader.person?.fullName||"-")}${leader.team?.name?`｜${teamName(leader.team.name)}`:""}`,value:`${leader.value}${suffix}`}))||[];
     return{standings,homeRuns:rows("homeRuns","本"),batting:rows("battingAverage",""),era:rows("earnedRunAverage","")};
