@@ -3,8 +3,8 @@
   "name": "baseball-compass-api",
   "main": "workers/index.ts",
   "compatibility_date": "2026-07-29",
-  "kv_namespaces": [{ "binding": "BASEBALL_DATA", "id": "REPLACE_WITH_KV_NAMESPACE_ID" }],
-  "d1_databases": [{ "binding": "DB", "database_name": "baseball-compass", "database_id": "REPLACE_WITH_D1_DATABASE_ID" }],
+  "kv_namespaces": [{ "binding": "BASEBALL_DATA", "id": "edaa716283064b119057ee3fe4ece374" }],
+  "d1_databases": [{ "binding": "DB", "database_name": "baseball-compass", "database_id": "125da1ca-66be-4d44-a5f2-50e36e7a4034" }],
   "triggers": { "crons": ["0 21,3,9 * * *"] },
   "vars": { "APP_TIMEZONE": "Asia/Tokyo", "ALLOWED_ORIGIN": "*" }
 }
