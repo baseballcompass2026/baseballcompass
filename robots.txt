@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://baseball-compass.pages.dev/sitemap.xml
