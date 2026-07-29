@@ -1,0 +1,9 @@
+import type { BaseballProvider } from "./BaseballProvider";
+
+// 無料枠で安定運用するためのサンプルProvider。外部API導入時はこのクラスを差し替える
+export class MockBaseballProvider implements BaseballProvider {
+  async getToday() { return { games: [{away:"東京スターズ",home:"大阪ブレイヴス",time:"18:00",venue:"コンパス球場"},{away:"名古屋ウイングス",home:"福岡マリナーズ",time:"18:30",venue:"ベイスタジアム"}], featured:{title:"東京スターズ vs 大阪ブレイヴス",reason:"首位争いを左右するエース同士の投げ合いに注目。"}, challenge:{title:"キャッチボール30回",description:"相手の胸を狙って、丁寧な送球を30回続けよう。"} }; }
+  async getSchedule() { return { today:[{away:"東京スターズ",home:"大阪ブレイヴス",time:"18:00",venue:"コンパス球場"},{away:"名古屋ウイングス",home:"福岡マリナーズ",time:"18:30",venue:"ベイスタジアム"}], yesterday:[{away:"大阪ブレイヴス",home:"東京スターズ",score:"2 - 5",venue:"コンパス球場",status:"試合終了"},{away:"福岡マリナーズ",home:"名古屋ウイングス",score:"3 - 3",venue:"ベイスタジアム",status:"試合終了"}] }; }
+  async getRanking() { return { standings:[{name:"東京スターズ",value:"48勝 31敗"},{name:"大阪ブレイヴス",value:"46勝 33敗"},{name:"名古屋ウイングス",value:"42勝 37敗"}], homeRuns:[{name:"山田 太郎",value:"24本"},{name:"鈴木 一郎",value:"21本"},{name:"高橋 海",value:"19本"}], batting:[{name:"田中 翼",value:".342"},{name:"山田 太郎",value:".331"},{name:"伊藤 健",value:".318"}], era:[{name:"佐藤 翔",value:"1.86"},{name:"中村 蓮",value:"2.04"},{name:"小林 陸",value:"2.21"}] }; }
+  async getShop() { return { products:[{id:"bat-01",category:"バット",name:"コンパス メイプルバット",description:"振り抜きやすさを重視した硬式木製モデル。",price:14800},{id:"glove-01",category:"グローブ",name:"オールラウンドグローブ",description:"扱いやすいエントリーモデル。",price:12800},{id:"spike-01",category:"スパイク",name:"フィールドスピード",description:"軽量性とグリップを両立。",price:9800},{id:"train-01",category:"トレーニング",name:"トレーニングバンド",description:"肩まわりのウォームアップに。",price:2400},{id:"gear-01",category:"練習器具",name:"バッティングティー",description:"高さ調節ができる自主練習用。",price:6900},{id:"pick-01",category:"おすすめ",name:"ベースボールスターターセット",description:"練習を始める人におすすめ。",price:19800}] }; }
+}
