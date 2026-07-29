@@ -1,0 +1,22 @@
+// 楽天アフィリエイトで選定した商品を、サイト共通のカードUIで表示する。
+const shopProducts = [
+  {category:"バット",maker:"ミズノ公式",name:"ビヨンドマックスレガシーLW",description:"一般軟式用・トップバランス。84cm、平均690gの公式限定カラーモデル。",price:"48,620円",image:"https://thumbnail.image.rakuten.co.jp/@0_mall/mizunoshop/cabinet/goods/1307/sh_1cjbr2068409.jpg?_ex=480x480",url:"https://hb.afl.rakuten.co.jp/ichiba/56279b86.7c3774f1.56279b87.37ec6cbc/_RTLink139492?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmizunoshop%2F1cjbr20684%2F&link_type=picttext"},
+  {category:"グローブ",maker:"ミズノ公式限定",name:"グローバルエリート TEEN AGE",description:"硬式・外野手用、サイズ16N。高校野球にも対応するブラックモデル。",price:"35,200円",image:"https://thumbnail.image.rakuten.co.jp/@0_mall/mizunoshop/cabinet/goods/1304/sh_1ajgh5340709.jpg?_ex=480x480",url:"https://hb.afl.rakuten.co.jp/ichiba/56279b86.7c3774f1.56279b87.37ec6cbc/_RTLink139492?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmizunoshop%2F1ajgh53407%2F&link_type=picttext"},
+  {category:"スパイク",maker:"アシックス公式",name:"GOLDSTAGE FANG",description:"グリップ性と走りやすさを追求したメンズ用ポイントスパイク。",price:"7,100円〜",image:"https://thumbnail.image.rakuten.co.jp/@0_mall/asicsonline/cabinet/10758351/cf_item/thum2/1121a067_2607thu.jpg?_ex=480x480",url:"https://hb.afl.rakuten.co.jp/ichiba/562909f0.7209b56c.562909f1.77afc14e/_RTLink139492?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fasicsonline%2F1121a067%2F&link_type=picttext"},
+  {category:"トレーニング",maker:"フィールドフォース公式",name:"アクセルバット FACB-8340",description:"しなりを活かし、ヘッドを走らせる感覚を養うスイング練習用バット。",price:"4,400円",image:"https://thumbnail.image.rakuten.co.jp/@0_mall/fieldforce/cabinet/10421366/10665004/imgrc0102444227.jpg?_ex=480x480",url:"https://hb.afl.rakuten.co.jp/ichiba/56290ce1.f8d8c596.56290ce2.23711ac4/_RTLink139492?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ffieldforce%2F121536%2F&link_type=picttext"},
+  {category:"トレーニング",maker:"フィールドフォース公式",name:"フォースティー FBT-333",description:"安定感と無段階の高さ調整に対応したティーバッティング用スタンド。",price:"9,900円",image:"https://thumbnail.image.rakuten.co.jp/@0_mall/fieldforce/cabinet/10421366/11153467/imgrc0102444236.jpg?_ex=480x480",url:"https://hb.afl.rakuten.co.jp/ichiba/56290ce1.f8d8c596.56290ce2.23711ac4/_RTLink139492?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ffieldforce%2F121934%2F&link_type=picttext"},
+  {category:"トレーニング",maker:"フィールドフォース公式",name:"スピードシャトルマシン FSSM-221",description:"一人でも実戦的な羽打ち練習ができる、自動発射式の練習マシン。",price:"13,200円",image:"https://thumbnail.image.rakuten.co.jp/@0_mall/fieldforce/cabinet/10421366/fssm-221/10981280/imgrc0106542418.jpg?_ex=480x480",url:"https://hb.afl.rakuten.co.jp/ichiba/56290ce1.f8d8c596.56290ce2.23711ac4/_RTLink139492?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ffieldforce%2F121835%2F&link_type=picttext"}
+];
+const shopView=document.querySelector('[data-api-view="shop"]');
+const shopSafe=value=>window.escapeCompass(value);
+function renderAffiliateShop(){
+ if(!shopView)return;
+ const categories=["すべて",...new Set(shopProducts.map(product=>product.category))];
+ shopView.innerHTML=`<div class="shop-intro"><div><span class="shop-pr">PR</span><strong>メーカー公式ショップを中心にセレクト</strong></div><p>価格・在庫・送料は楽天市場の商品ページでご確認ください。</p></div><div class="tabs">${categories.map((category,index)=>`<button class="tab${index?"":" active"}" data-category="${shopSafe(category)}">${shopSafe(category)}</button>`).join("")}</div><div class="product-grid" data-products></div>`;
+ const productArea=shopView.querySelector("[data-products]");
+ const card=product=>`<article class="product-card affiliate-card"><a class="affiliate-image" href="${product.url}" target="_blank" rel="nofollow sponsored noopener"><img src="${product.image}" alt="${shopSafe(product.name)}" loading="lazy" width="480" height="480"></a><div class="affiliate-body"><div class="affiliate-meta"><span class="category">${shopSafe(product.category)}</span><span>${shopSafe(product.maker)}</span></div><h3>${shopSafe(product.name)}</h3><p>${shopSafe(product.description)}</p><div class="affiliate-price"><strong>${shopSafe(product.price)}</strong><small>税込・2026年7月29日時点</small></div><a class="rakuten-button" href="${product.url}" target="_blank" rel="nofollow sponsored noopener"><span>楽天市場で見る</span><b aria-hidden="true">↗</b></a></div></article>`;
+ const draw=category=>productArea.innerHTML=shopProducts.filter(product=>category==="すべて"||product.category===category).map(card).join("");
+ draw("すべて");
+ shopView.querySelectorAll("[data-category]").forEach(button=>button.onclick=()=>{shopView.querySelectorAll(".tab").forEach(tab=>tab.classList.remove("active"));button.classList.add("active");draw(button.dataset.category)});
+}
+renderAffiliateShop();
