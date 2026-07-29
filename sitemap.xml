@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://baseball-compass.pages.dev/</loc><priority>1.0</priority></url>
+<url><loc>https://baseball-compass.pages.dev/today/</loc><priority>1.0</priority></url>
+<url><loc>https://baseball-compass.pages.dev/schedule/</loc></url>
+<url><loc>https://baseball-compass.pages.dev/ranking/</loc></url>
+<url><loc>https://baseball-compass.pages.dev/game/</loc></url>
+<url><loc>https://baseball-compass.pages.dev/shop/</loc></url>
+<url><loc>https://baseball-compass.pages.dev/search/</loc></url>
+<url><loc>https://baseball-compass.pages.dev/profile/</loc></url>
+</urlset>
