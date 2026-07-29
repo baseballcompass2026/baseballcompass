@@ -39,3 +39,19 @@ PagesはGitHub連携でリポジトリルートを配信します。静的サイ
 ## 将来のデータAPI差し替え
 
 `api/providers/BaseballProvider.ts` の契約を実装し、`api/service.ts` のProvider生成箇所を差し替えます。画面・API・Providerを分離しているため、BASEBALL ARと自社ECも独立して追加できます。
+## ニュースシステム
+
+- `api/news/providers/`: 差し替え可能なNewsProvider
+- `GdeltNewsProvider`: GDELT DOC APIからタイトル・URL・媒体・公開日時のみ取得
+- `api/news/classifier.ts`: カテゴリー・選手・球団・注目度を判定
+- `migrations/0002_news.sql`: 本文・要約・画像・動画を持たないD1テーブル
+- Cron `*/30 * * * *`: 30分ごとに取得・重複排除・分類・保存
+- API: `/api/news`, `/api/news/mlb`, `/api/news/npb`, `/api/news/player/ohtani`
+
+本番D1へのマイグレーション:
+
+```bash
+npx wrangler d1 execute baseball-compass --remote --config wrangler.worker.jsonc --file migrations/0002_news.sql
+```
+
+著作権方針: ニュース本文、要約、画像、動画は取得・保存・表示せず、元記事への入口となるメタデータだけを扱います。
