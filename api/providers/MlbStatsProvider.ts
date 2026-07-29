@@ -29,7 +29,7 @@ export class MlbStatsProvider implements BaseballProvider {
     const hittingUrl=`https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=homeRuns,battingAverage&statGroup=hitting&statType=season&season=${season}&sportId=1&limit=10&hydrate=person,team`;
     const pitchingUrl=`https://statsapi.mlb.com/api/v1/stats/leaders?leaderCategories=earnedRunAverage&statGroup=pitching&statType=season&season=${season}&sportId=1&limit=10&hydrate=person,team`;
     const [standingsData,hittingData,pitchingData]=await Promise.all([this.officialJson<MlbStandings>(standingsUrl),this.officialJson<MlbLeaders>(hittingUrl),this.officialJson<MlbLeaders>(pitchingUrl)]);
-    const standings=(standingsData.records||[]).flatMap(record=>record.teamRecords.map((team,index)=>({rank:index+1,name:`${divisionJa[record.division?.id||0]||"MLB"}｜${teamName(team.team.name)}`,value:`${team.wins}勝 ${team.losses}敗（${team.winningPercentage}）`})));
+    const standings=(standingsData.records||[]).flatMap(record=>record.teamRecords.map((team,index)=>({division:divisionJa[record.division?.id||0]||"MLB",rank:index+1,name:teamName(team.team.name),value:`${team.wins}勝 ${team.losses}敗（${team.winningPercentage}）`})));
     const groups=[...(hittingData.leagueLeaders||[]),...(pitchingData.leagueLeaders||[])];
     const rows=(category:string,suffix:string)=>groups.find(group=>group.leaderCategory===category)?.leaders.map(leader=>({name:`${playerName(leader.person?.fullName||"-")}${leader.team?.name?`｜${teamName(leader.team.name)}`:""}`,value:`${leader.value}${suffix}`}))||[];
     return{standings,homeRuns:rows("homeRuns","本"),batting:rows("battingAverage",""),era:rows("earnedRunAverage","")};
