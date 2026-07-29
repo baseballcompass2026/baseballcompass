@@ -1,5 +1,5 @@
 // 共通ナビゲーションとAPI補助関数
-const page=document.body.dataset.page||"";const nav=[["today","/today/","TODAY"],["game","/game/","GAME"],["shop","/shop/","SHOP"],["search","/search/","検索"]];
+const page=document.body.dataset.page||"";const nav=[["today","/today/","TODAY"],["news","/news/","NEWS"],["game","/game/","GAME"],["shop","/shop/","SHOP"],["search","/search/","検索"]];
 const header=document.querySelector("[data-header]");if(header)header.innerHTML=`<header class="site-header"><nav class="nav" aria-label="メインナビゲーション"><a class="brand" href="/"><img src="/assets/favicon.svg" alt=""><span>BASEBALL COMPASS</span></a><div class="nav-links">${nav.map(([k,h,l])=>`<a href="${h}"${page===k?' aria-current="page"':""}>${l}</a>`).join("")}</div></nav></header>`;
 const footer=document.querySelector("[data-footer]");if(footer)footer.innerHTML=`<footer class="site-footer"><div class="container"><div><strong>BASEBALL COMPASS</strong><br><span>野球をもっと楽しもう。</span></div><span>© ${new Date().getFullYear()}</span></div></footer>`;
 window.fetchCompass=async endpoint=>{const r=await fetch(`/api/${endpoint}`,{headers:{Accept:"application/json"}});if(!r.ok)throw new Error("データを取得できませんでした");return r.json()};window.escapeCompass=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]);// 収益化機能は独立ファイルに分離し、広告会社の変更を容易にする

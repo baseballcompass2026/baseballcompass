@@ -1,9 +1,13 @@
 import type { Env } from "../api/types";
 import { routeApi } from "../api/router";
 import { refreshAll } from "../api/service";
+import { refreshNews } from "../api/news/service";
+
 export default {
-  // Workers側の /api/* エンドポイント
-  fetch(request: Request, env: Env) { return routeApi(request, env); },
-  // UTC 21:00/03:00/09:00 = JST 06:00/12:00/18:00
-  async scheduled(_controller: ScheduledController, env: Env, ctx: ExecutionContext) { ctx.waitUntil(refreshAll(env)); }
+  fetch(request: Request, env: Env, ctx: ExecutionContext) { return routeApi(request, env, ctx); },
+  async scheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext) {
+    // ニュースは30分ごと、既存の試合・順位KVは従来どおりJST 6/12/18時に更新する。
+    if (controller.cron === "*/30 * * * *") ctx.waitUntil(refreshNews(env));
+    else ctx.waitUntil(refreshAll(env));
+  }
 } satisfies ExportedHandler<Env>;
