@@ -4,16 +4,24 @@ import { GdeltNewsProvider, ManualNewsProvider, RssNewsProvider } from "./provid
 import { pruneOldNews, saveNews } from "./repository";
 import type { NewsInput, NewsProvider } from "./types";
 
+const PUBLISHER_FEEDS = [
+  "https://full-count.jp/feed/",
+  "https://baseballking.jp/feed/",
+  "https://www3.nhk.or.jp/rss/news/cat7.xml",
+  "https://news.google.com/rss/search?q=%E9%87%8E%E7%90%83&hl=ja&gl=JP&ceid=JP%3Aja"
+];
+
 function createProvider(env: Env): NewsProvider {
+  const limit = Number(env.NEWS_FETCH_LIMIT || 75);
   if (env.NEWS_PROVIDER === "manual") return new ManualNewsProvider();
-  if (env.NEWS_PROVIDER === "rss") return new RssNewsProvider(env.NEWS_RSS_URL, Number(env.NEWS_FETCH_LIMIT || 75));
+  if (env.NEWS_PROVIDER === "rss") return new RssNewsProvider(env.NEWS_RSS_URL || PUBLISHER_FEEDS[0], limit);
   return new FallbackNewsProvider([
-    new GdeltNewsProvider(env.NEWS_QUERY || "野球 sourcelang:japanese", Number(env.NEWS_FETCH_LIMIT || 75)),
-    new RssNewsProvider(env.NEWS_RSS_URL, Number(env.NEWS_FETCH_LIMIT || 75))
+    new GdeltNewsProvider(env.NEWS_QUERY || "野球 sourcelang:japanese", limit),
+    ...PUBLISHER_FEEDS.map(url => new RssNewsProvider(url, limit))
   ]);
 }
 
-// 無料APIがレート制限された場合は次のProviderへ自動的に切り替える。
+// 無料APIが制限・停止した場合は、公開RSSを提供する野球媒体へ順番に切り替える。
 class FallbackNewsProvider implements NewsProvider {
   constructor(private readonly providers: NewsProvider[]) {}
   async fetchNews(): Promise<NewsInput[]> {
