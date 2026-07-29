@@ -1,12 +1,36 @@
 import type { Env } from "../types";
 import { enrichNews } from "./classifier";
-import { GdeltNewsProvider, ManualNewsProvider } from "./providers";
+import { GdeltNewsProvider, ManualNewsProvider, RssNewsProvider } from "./providers";
 import { pruneOldNews, saveNews } from "./repository";
-import type { NewsProvider } from "./types";
+import type { NewsInput, NewsProvider } from "./types";
 
 function createProvider(env: Env): NewsProvider {
   if (env.NEWS_PROVIDER === "manual") return new ManualNewsProvider();
-  return new GdeltNewsProvider(env.NEWS_QUERY || "野球 sourcelang:japanese", Number(env.NEWS_FETCH_LIMIT || 75));
+  if (env.NEWS_PROVIDER === "rss") return new RssNewsProvider(env.NEWS_RSS_URL, Number(env.NEWS_FETCH_LIMIT || 75));
+  return new FallbackNewsProvider([
+    new GdeltNewsProvider(env.NEWS_QUERY || "野球 sourcelang:japanese", Number(env.NEWS_FETCH_LIMIT || 75)),
+    new RssNewsProvider(env.NEWS_RSS_URL, Number(env.NEWS_FETCH_LIMIT || 75))
+  ]);
+}
+
+// 無料APIがレート制限された場合は次のProviderへ自動的に切り替える。
+class FallbackNewsProvider implements NewsProvider {
+  constructor(private readonly providers: NewsProvider[]) {}
+  async fetchNews(): Promise<NewsInput[]> {
+    const failures: string[] = [];
+    for (const provider of this.providers) {
+      try {
+        const news = await provider.fetchNews();
+        if (news.length) return news;
+        failures.push(`${provider.constructor.name}: empty`);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        failures.push(`${provider.constructor.name}: ${message}`);
+        console.warn("news.provider.fallback", { provider: provider.constructor.name, error: message });
+      }
+    }
+    throw new Error(`All news providers failed: ${failures.join(", ")}`);
+  }
 }
 
 export async function refreshNews(env: Env): Promise<{ fetched:number; saved:number }> {
