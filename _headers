@@ -3,7 +3,7 @@
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data: https://hbb.afl.rakuten.co.jp https://thumbnail.image.rakuten.co.jp; style-src 'self'; script-src 'self' https://www.googletagmanager.com; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: https://hbb.afl.rakuten.co.jp https://thumbnail.image.rakuten.co.jp https://adm.shinobi.jp; style-src 'self'; script-src 'self' https://www.googletagmanager.com https://adm.shinobi.jp; connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://adm.shinobi.jp; frame-src https://adm.shinobi.jp
 
 /assets/*
   Cache-Control: public, max-age=0, must-revalidate

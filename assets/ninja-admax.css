@@ -1,0 +1,7 @@
+.ad-container{width:calc(100% - 32px);max-width:728px;margin:24px auto;text-align:center;min-height:90px;display:grid;place-items:center;position:relative;overflow:hidden;border:1px solid rgba(9,105,218,.12);border-radius:16px;background:rgba(255,255,255,.72)}
+.ad-container-label{position:absolute;top:5px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:.58rem;letter-spacing:.12em}
+.ad-container-slot{width:100%;min-height:90px}
+.news-grid>.ad-container{grid-column:1/-1;width:100%;margin:10px auto 20px}
+.article-ad-intro,.article-ad-end{width:100%;max-width:728px;margin:24px auto}
+@media(max-width:640px){.ad-container{width:calc(100% - 24px);margin:16px auto;min-height:90px}.news-grid>.ad-container{width:100%}}
+@media(prefers-color-scheme:dark){.ad-container{border-color:rgba(255,255,255,.14);background:rgba(7,27,51,.9)}.ad-container-label{color:#b9c8d7}}
