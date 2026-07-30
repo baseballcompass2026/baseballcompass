@@ -1,6 +1,7 @@
 import type { Endpoint, Env } from "./types";
 import { readOne } from "./service";
 import { routeNewsApi } from "./news/router";
+import { getOhtaniSeasonStats } from "./ohtani";
 const endpoints = new Set<Endpoint>(["today","schedule","ranking","shop"]);
 
 interface CacheContext { waitUntil(promise: Promise<unknown>): void }
@@ -16,6 +17,7 @@ export async function routeApi(request: Request, env: Env, ctx?: CacheContext): 
   try {
     let response: Response;
     if (parts[1] === "news") response = await routeNewsApi(request, env);
+    else if (parts[1] === "ohtani") response = await getOhtaniSeasonStats();
     else {
       const endpoint = parts.at(-1) as Endpoint;
       if(!endpoints.has(endpoint)) return Response.json({error:"Not found"},{status:404,headers});
