@@ -8,3 +8,7 @@ const monetizationScript=document.createElement("script");monetizationScript.src
 
 // GA4とCookie同意は共通スクリプトから全ページへ適用する。
 const analyticsScript=document.createElement("script");analyticsScript.src="/assets/analytics.js?v=20260730-ga1";analyticsScript.defer=true;document.body.append(analyticsScript);
+
+// 忍者AdMaxは共通ファイルから一度だけ読み込む。
+document.head.insertAdjacentHTML("beforeend",'<link rel="stylesheet" href="/assets/ninja-admax.css?v=20260730-admax1">');
+const admaxScript=document.createElement("script");admaxScript.src="/assets/ninja-admax.js?v=20260730-admax1";admaxScript.defer=true;document.body.append(admaxScript);
