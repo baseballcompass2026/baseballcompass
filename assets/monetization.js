@@ -31,12 +31,3 @@ applyMonetization();
 if (apiView) {
   new MutationObserver(applyMonetization).observe(apiView, { childList: true, subtree: true });
 }
-// 収益化に必要な法務・問い合わせページを全ページのフッターへ表示する
-const footerContainer = document.querySelector(".site-footer .container");
-if (footerContainer && !footerContainer.querySelector(".footer-links")) {
-  const legalNav = document.createElement("nav");
-  legalNav.className = "footer-links";
-  legalNav.setAttribute("aria-label", "フッターナビゲーション");
-  legalNav.innerHTML = '<a href="/privacy/">プライバシー</a><a href="/contact/">お問い合わせ</a>';
-  footerContainer.querySelector("span:last-child")?.before(legalNav);
-}
