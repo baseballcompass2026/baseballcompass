@@ -65,6 +65,6 @@ if (footerContainer && !footerContainer.querySelector(".footer-links")) {
   const legalNav = document.createElement("nav");
   legalNav.className = "footer-links";
   legalNav.setAttribute("aria-label", "フッターナビゲーション");
-  legalNav.innerHTML = '<a href="/advertising/">広告掲載</a><a href="/privacy/">プライバシー</a><a href="/contact/">お問い合わせ</a>';
+  legalNav.innerHTML = '<a href="/privacy/">プライバシー</a><a href="/contact/">お問い合わせ</a>';
   footerContainer.querySelector("span:last-child")?.before(legalNav);
 }
